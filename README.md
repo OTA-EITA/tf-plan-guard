@@ -1,6 +1,7 @@
 # tf-plan-guard
 
 [![ci](https://github.com/OTA-EITA/tf-plan-guard/actions/workflows/ci.yml/badge.svg)](https://github.com/OTA-EITA/tf-plan-guard/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/OTA-EITA/tf-plan-guard/badge)](https://securityscorecards.dev/viewer/?uri=github.com/OTA-EITA/tf-plan-guard)
 
 `terraform plan` の結果を読み、**今回の apply で実際に起きる危険な変更**を PR の段階で止める CLI です。
 データの消失、削除保護の解除、インターネットへの開放、IAM のワイルドカード、公開ストレージ、暗号化なし、監査ログの停止を検出します。
