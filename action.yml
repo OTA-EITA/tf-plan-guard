@@ -1,0 +1,50 @@
+name: tf-plan-guard
+description: Review a Terraform plan for data loss, internet exposure, wildcard IAM, public storage and disabled audit logging
+branding:
+  icon: shield
+  color: orange
+
+inputs:
+  plan-json:
+    description: Path to the output of `terraform show -json PLANFILE`
+    required: true
+  fail-on:
+    description: Fail on findings at least this severe (high, medium, low)
+    default: high
+  ignore-file:
+    description: File with RULE=ADDRESS_PATTERN lines to ignore
+    default: .tfplanguard-ignore
+
+outputs:
+  report:
+    description: Path to the Markdown report, e.g. to post as a pull request comment
+    value: ${{ steps.guard.outputs.report }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-go@v6
+      with:
+        go-version: stable
+        cache: false
+    - name: Install tf-plan-guard
+      shell: bash
+      env:
+        REF: ${{ github.action_ref }}
+      run: go install "github.com/OTA-EITA/tf-plan-guard/cmd/tf-plan-guard@${REF:-latest}"
+    - name: Review plan
+      id: guard
+      shell: bash
+      env:
+        PLAN: ${{ inputs.plan-json }}
+        FAIL_ON: ${{ inputs.fail-on }}
+        IGNORE_FILE: ${{ inputs.ignore-file }}
+      run: |
+        report="$RUNNER_TEMP/tf-plan-guard.md"
+        echo "report=$report" >> "$GITHUB_OUTPUT"
+        set +e
+        "$(go env GOPATH)/bin/tf-plan-guard" --output markdown --fail-on "$FAIL_ON" --ignore-file "$IGNORE_FILE" "$PLAN" > "$report"
+        code=$?
+        set -e
+        cat "$report" >> "$GITHUB_STEP_SUMMARY"
+        exit "$code"
