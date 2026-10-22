@@ -1,0 +1,10 @@
+/bin/
+/dist/
+*.test
+coverage.out
+plan.json
+result.json
+*.tfplan
+.terraform/
+.terraform.lock.hcl
+.DS_Store
