@@ -89,7 +89,7 @@ TF-NET-002
 
 ```yaml
 - run: terraform plan -out plan.tfplan && terraform show -json plan.tfplan > plan.json
-- uses: OTA-EITA/tf-plan-guard@v0.1.0
+- uses: OTA-EITA/tf-plan-guard@v0.1.1
   id: guard
   with:
     plan-json: plan.json
